@@ -4,6 +4,7 @@ from loaders.db_loader import load_db
 from services.auth import AuthService
 from services.user import UserService
 from services.outlook import OutlookService
+from services.twilio import TwilioService
 
 def load():
     app = load_app()
@@ -12,10 +13,12 @@ def load():
     auth_service = AuthService(session)
     user_service = UserService(db)
     outlook_service = OutlookService()
+    twilio_service = TwilioService()
     return {
         "app": app,
         "session": session,
         "auth_service": auth_service,
         "user_service": user_service,
-        "outlook_service": outlook_service
+        "outlook_service": outlook_service,
+        "twilio_service": twilio_service
     }

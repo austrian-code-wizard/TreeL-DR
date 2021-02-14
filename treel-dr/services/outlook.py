@@ -58,8 +58,6 @@ class OutlookService:
     def get_user_info(self, token: str):
         response = self._graphql_request(self._ENDPOINTS["GET_USER"], token)
         user_info_dict = {
-            'first': response["givenName"],
-            'last': response["surname"],
             'email': response["userPrincipalName"]
         }
         return UserSchema(**user_info_dict)
