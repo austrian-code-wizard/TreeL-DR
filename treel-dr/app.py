@@ -26,8 +26,8 @@ def login():
             "first": request.form["first_name"],
             "last": request.form["last_name"],
             "interval": int(request.form["interval"]),
-            "phone_number": clean_phone_number(request.form["phone"]),
-            "lastJob": datetime.utcnow() - timedelta(years=3),
+            "phone_number": clean_phone_number(request.form["phoneOne"]),
+            "lastJob": datetime.utcnow() - timedelta(hours=24 * 365),
             "subscribed": [key for key in ["covid_updates", "job_opportunities", "school", "events"] if key in request.form]
         })
         session["user_info"] = remove_none_from_dict(user.dict())
