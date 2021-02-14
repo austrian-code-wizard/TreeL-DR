@@ -135,7 +135,7 @@ class GPT3Service:
             if category_term in category_text_low:
                 return category_name
 
-        return None
+        return "other"
 
 class TestGPT3Service:
     def __init__(self):

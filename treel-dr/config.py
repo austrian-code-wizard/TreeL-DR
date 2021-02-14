@@ -33,7 +33,7 @@ SERVICE_ACCOUNT_PATH = '/Users/moritzstephan/Downloads/treel-dr-82e7451bd561.jso
 
 #### GPT3 / OPEN AI CONFIG ####
 
-OPENAI_KEY = os.environ.get("OPENAI_KEY", None)
+OPENAI_KEY = "sk-O30doYHukRpcknbpOyXsfZJ9VcgK5WrqblomGnrC"
 
 #### TWILIO CONFIG ####
 

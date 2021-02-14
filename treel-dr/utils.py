@@ -42,3 +42,8 @@ def clean_phone_number(number: str):
         cleaned_number = "+" + cleaned_number
     return cleaned_number
 
+def format_event_name(text: str):
+    text = text.split("_")
+    text = [word.capitalize() for word in text]
+    return " ".join(text)
+
