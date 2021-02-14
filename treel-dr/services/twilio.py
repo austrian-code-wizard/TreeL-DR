@@ -1,5 +1,7 @@
 from twilio.rest import Client
 from logging import Logger, getLogger
+from schemas.user import UserSchema
+from typing import Dict
 from config import TWILIO_AUTH_TOKEN, TWILIO_NUMBER, TWILIO_SID
 
 class TwilioService:
@@ -16,3 +18,12 @@ class TwilioService:
                         to=phone_number
                     )
         return True
+
+    def send_treeldr_header(phone_number: str, user: UserSchema):
+        pass
+
+    def send_treeldr_footer(phone_number: str, user: UserSchema):
+        pass
+
+    def send_treeldr(self, email_info: Dict):
+        pass

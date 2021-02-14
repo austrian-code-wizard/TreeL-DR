@@ -4,7 +4,7 @@ import re
 import openai
 
 from config import OPENAI_KEY
-from services.gpt3_examples import prompt_templates, email_examples
+from data.gpt3_examples import prompt_templates, email_examples
 
 class GPT3Service:
     temperature = 0

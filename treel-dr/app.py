@@ -60,7 +60,7 @@ def authorized():
         res = user_service.upsertUser(user)
 
         twilio_service.send_text(user.phone_number, f"\n🌲Welcome to TreeL;DR🌲\n\nWe will send your email digest every {user.interval} hours.\nYou are currently subscribed to emails about {(', '.join(user.subscribed))}.")
-
+        session.clear()
         return redirect(CONFIRMATION_PAGE_URL)
     except ValueError as e:  # Usually caused by CSRF
         return jsonify({"error": {e}})
