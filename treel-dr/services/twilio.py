@@ -27,11 +27,11 @@ class TwilioService:
         self.send_text(user.phone_number, text)
 
     def send_treeldr_footer(self, user: UserSchema):
-        text = f"That was your TreeL;DR 🌈. But don't worry! You will receive your next one in {user.interval} hours 🚀."
+        text = f"That was your TreeL;DR 🌈. But don't worry! You will receive your next one in {user.interval} hours 🚀.\n\nWant to use the time and money saved with TreeL;DR for a good cause? Donate at https://email-project-d4353e.webflow.io/donations"
         self.send_text(user.phone_number, text)
 
     def send_treeldr(self, user: UserSchema, email_info: Dict, num_emails: int, email_index: int):
-        text = f'\n\n📧{email_index}/{num_emails}📧\n\nCategory: {format_event_name(email_info["attributes"]["category"])}\nSender: {email_info["from"]}\nSummary: {email_info["attributes"]["summary"]}\nAction Needed: {email_info["attributes"]["action_needed"] if email_info["attributes"]["action_needed"] != "" else "None"}\nDeadline: {email_info["attributes"]["deadline"] if email_info["attributes"]["deadline"] != "" else "None"}'
+        text = f'\n\n📧{email_index}/{num_emails}📧\n\n🧩Category: {format_event_name(email_info["attributes"]["category"])}\n➡️Sender: {email_info["from"]}\n💬Summary: {email_info["attributes"]["summary"]}\n✅Action Needed: {email_info["attributes"]["action_needed"] if email_info["attributes"]["action_needed"] != "" else "None"}\n🛑Deadline: {email_info["attributes"]["deadline"] if email_info["attributes"]["deadline"] != "" else "None"}'
         self.send_text(user.phone_number, text)
 
     def send_no_emails_found(self, user: UserSchema):
