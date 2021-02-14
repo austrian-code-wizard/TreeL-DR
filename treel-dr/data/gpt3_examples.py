@@ -1,5 +1,5 @@
 prompt_templates = [
-    """The following is the body of an email I received. I would like you to answer some questions about it after reading it.
+    """I am going to show you an email and then ask you questions about it. 
 
 #####
 
@@ -15,21 +15,21 @@ https://www.twilio.com/reset-verification
 
 Questions:
 1. What is the tl;dr of the email?
-2. What are the key points about the email?
-3. What is the category of the email (event, class announcement, job posting, covid-19 update, or other)?
-4. Is there anything that I need to do?
-5. When is the deadline?
-6. Does this email talk about covid-19?
-7. What is the sentiment of the email?
+2. What is the category of the email (event, school announcement, job posting, covid-19 update, or other)?
+3. Does the email ask you to do anything?
+4. When is the deadline?
+5. Does the email mention covid-19?
+6. What is the sentiment of the email?
+7. What are the key points about the email?
 
 Answers:
 1. The tl;dr of the email is that someone has requested a password reset for your account.
-2. The key points of the email are that someone has requested a password reset for your account, that I can disregard the email if you did not request a password reset, that no changes have been made to my account, and that you can reset my password by following a link within the next 90 minutes.
-3. The category of the email is a password reset.
-4. Yes, you need to follow a link to reset your password.
-5. Yes, the deadline is within the next 90 minutes.
-6. No.
-7. The sentiment of the email is neutral.
+2. The category of the email is a password reset.
+3. Yes, you need to follow a link to reset your password.
+4. The deadline is within the next 90 minutes.
+5. No, the email does not mention covid-19.
+6. The sentiment of the email is neutral.
+7. The key points of the email are that someone has requested a password reset for your account, that I can disregard the email if you did not request a password reset, that no changes have been made to my account, and that you can reset my password by following a link within the next 90 minutes.
 
 #####
 
@@ -39,12 +39,12 @@ Answers:
 
 Questions:
 1. What is the tl;dr of the email?
-2. What are the key points about the email?
-3. What is the category of the email (event, class announcement, job posting, covid-19 update, or other)?
-4. Is there anything that I need to do?
-5. When is the deadline?
-6. Does this email mention covid-19?
-7. What is the sentiment of the email?
+2. What is the category of the email (event, school announcement, job posting, covid-19 update, or other)?
+3. Does the email ask you to do anything?
+4. When is the deadline?
+5. Does the email mention covid-19?
+6. What is the sentiment of the email?
+7. What are the key points about the email?
 
 Answers:
 1.""",
