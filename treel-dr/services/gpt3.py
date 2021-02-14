@@ -3,21 +3,24 @@ import re
 
 import openai
 
-from config import OPENAI_KEY
-from data.gpt3_examples import prompt_templates, email_examples
+from services.gpt3_examples import prompt_templates, email_examples
+from utils import Timer
+
 
 class GPT3Service:
     temperature = 0
     engine = "davinci"
-    max_tokens = 150
-    frequency_penalty = 0.5
+    max_tokens = 300
+    frequency_penalty = 0.3
 
-    answers_regex = r"\d\. "
+    # answers_regex = r"((^|(\d\. )).+?(?=(\n\d\. )|$))"
+    answers_regex = "\d\. "
+    summary_max_len = 40
+    max_chars_in_body = 3500
 
     prompt_template = prompt_templates[0]
 
     def __init__(self, logger: Logger = None):
-        openai.key = OPENAI_KEY
         if not logger:
             logger = getLogger("GPT3ServiceLogger")
         self._logger = logger
@@ -41,19 +44,20 @@ class GPT3Service:
         body = self._validate_body(body)
         prompt = self._fill_prompt(body)
 
-        response = openai.Completion.create(
-            engine=self.engine, prompt=prompt, max_tokens=self.max_tokens, temperature=self.temperature
-        )
+        with Timer(self._logger, "Making open ai request"):
+            response = openai.Completion.create(
+                engine=self.engine, prompt=prompt, max_tokens=self.max_tokens, temperature=self.temperature, frequency_penalty=self.frequency_penalty
+            )
 
         extraction = self._parse_response(response)
         
         return extraction
 
     def _validate_body(self, body):
-        return body[:2500]
+        return body[:self.max_chars_in_body]
 
     def _fill_prompt(self, body):
-        prompt = self.gpt3_prompt_template.format(body=body)
+        prompt = self.prompt_template.format(body=body)
         return prompt
 
     def _parse_response(self, response_object):
@@ -62,16 +66,16 @@ class GPT3Service:
         return result
 
     def _parse_response_text(self, response_text):
-        response_text = response_text.split("#####")[0]
+        response_text = response_text.split("#####")[0].strip()
         answers = re.split(self.answers_regex, response_text)
         (
             tldr,
-            key_points,
             category_text,
             action_needed_text,
             deadline_text,
             mentions_covid_text,
             sentiment_text,
+            key_points,
         ) = [answer.replace("\n", "") for answer in answers]
 
         summary = self._get_summary(tldr, key_points)
@@ -93,33 +97,36 @@ class GPT3Service:
         return result
 
     def _get_summary(self, tldr, key_points):
-        if len(key_points.split()) > 40:
+        if len(key_points.split()) > self.summary_max_len:
             return tldr
         else:
             return key_points
 
     def _get_sentiment(self, sentiment_text):
-        return sentiment_text.split()[-1].replace(".", "")
+        sentiment_text_low = sentiment_text.lower()
+        pieces = sentiment_text_low.split("the sentiment of the email is ")
+        if pieces == 1:
+            return sentiment_text
+        
+        words = pieces[-1].split()
+        return words[-1].replace(".", "")
 
     def _get_deadline(self, deadline_text):
         deadline_text_lower = deadline_text.lower()
-        if "no," in deadline_text_lower:
+        if " not" in deadline_text_lower or " no " in deadline_text_lower or "unknown" in deadline_text_lower:
             return ""
-
         else:
-            return deadline_text_lower.split('yes, ')[-1]
+            return deadline_text
 
     def _get_action(self, action_text):
-        action_text_lower = action_text.lower()
-        if "no," in action_text_lower:
+        if "No," in action_text:
             return ""
-
         else:
-            return action_text_lower.split('yes, ')[-1]
+            return action_text.split('Yes, ')[-1]
 
     def _check_if_mentions_covid(self, mentions_covid_text):
         mentions_covid_text_lower = mentions_covid_text.lower()
-        if "no," in mentions_covid_text_lower:
+        if "no," in mentions_covid_text_lower or "no." in mentions_covid_text_lower:
             return False
 
         else:
@@ -128,7 +135,7 @@ class GPT3Service:
     def _get_category(self, category_text):
         category_text_low = category_text.lower()
 
-        categories = [("event", "events"), ("job", "job_opportunities"), ("class", "school"), ("covid", "covid_updates")]
+        categories = [("event", "events"), ("job", "job_opportunities"), ("school", "school"), ("covid", "covid_updates")]
 
         for category in categories:
             category_term, category_name = category
@@ -142,7 +149,17 @@ class TestGPT3Service:
         self.gpt3_service = GPT3Service()
 
     def __call__(self):
+        start_i = 2
+        i = 0
         for email_name in email_examples:
+            i += 1
+            if i < start_i:
+                continue
+            
             body = email_examples[email_name]["body"]
+            print(body)
+
             result = self.gpt3_service.get_email_attributes(body)
             print(result)
+            print(f"analyzed {i}: {email_name}")
+            input("continue? ")
