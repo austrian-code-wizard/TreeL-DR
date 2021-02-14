@@ -6,6 +6,7 @@ class CheckbookService:
     default_donation_amount = 25
 
     CHECKBOOK_CHECK_ENPOINT = 'https://api.sandbox.checkbook.io/v3/check/digital'
+    donate_success_url = 'https://example.com'
 
     def __init__(self, user_service):
         self.user_service = user_service
@@ -40,3 +41,5 @@ class CheckbookService:
 
         r = requests.post(self.CHECKBOOK_CHECK_ENPOINT, headers=headers, json=data)
         r.raise_for_status()
+
+        return self.donate_success_url
