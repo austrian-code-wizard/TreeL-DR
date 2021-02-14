@@ -116,9 +116,9 @@ def donate():
     message = request.form.get('message', '')
 
     checkbook_service = dependencies['checkbook_service']
-    checkbook_service.donate(email, nonprofit, routing_num, account_num, amount, message)
+    redirect_url = checkbook_service.donate(email, nonprofit, routing_num, account_num, amount, message)
 
-    return redirect('/donate_success')
+    return redirect(redirect_url)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT)
