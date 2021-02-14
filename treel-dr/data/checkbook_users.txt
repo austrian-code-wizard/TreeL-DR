@@ -1,0 +1,63 @@
+Sandbox
+
+key 69404e2e99bb329154264ad92b9647c4
+secret f021d824d27854503cfd1d0906ddbccd
+
+curl --request POST \
+  --url https://api.sandbox.checkbook.io/v3/check/digital \
+  --header 'Accept: application/json' \
+  --header 'Authorization: 0e1a46e1eb8b4177a64c06dd56b6184d:oWTnMo5b5wmRCZck5r3s51sTKr7fUH' \
+  --header 'Content-Type: application/json' \
+  --data '{"recipient":"carolineagraham01@outlook.com","name":"Caroline Graham","amount":25,"description":"Test Check"}'
+
+########
+
+name: Moritz Stephan
+user_id: moritzst@stanford.edu
+publishable_key: becd6a85575046a7922a3d4200fb3072
+secret_key: agpWtxfjhZhewmKUiduqIzRe0cYjms
+
+name: Moritz Stephan
+user_id: moritz.stephan@outlook.com
+publishable_key: 5f624e829a174fac921f281d94a8c2ad
+secret_key: egOtdUoUTrDe1XCHYYvv3UoU0LZIlr
+
+name: Santiago Hernandez
+user_id: santiaghini@outlook.com
+publishable_key: 43d4e38e3de24200bb65704807f1a275
+secret_key: zqaBMiJ5T66wkRh1scoTRwAmeesMWb
+
+name: NonProfit 1
+user_id: nonprofit1
+publishable_key: 07494ece684741bd97a3e7d6525ab6c2
+secret_key: SGEnma53frL71rY3GLeu1IXqRMrD5z
+
+name: NonProfit 2
+user_id: nonprofit2
+publishable_key: 8e8829159e9440a78414172936f34d50
+secret_key: RtQrP3RWkIJxscP6w7FZOJqqszPzPk
+
+name: NonProfit 3
+user_id: nonprofit3
+publishable_key: 2114394b23b94b2c85b8a4839dead713
+secret_key: vQaOdBIhnctm41nOT990eLXHfQBnhZ
+
+name: TreeLDR
+user_id: treeldr@outlook.com
+publishable_key: cd6277fc5c0d406da05acf767926a3ac
+secret_key: fOtmYVoXZxqs2l3GkzrKovjcpug1AH
+
+name: Moritz Stephan
+user_id: moritz.stephan2@outlook.com
+publishable_key: 56046867aed54e1b98589d1ce8f9c304
+secret_key: xUyNIz2gDhsIaXlKfEzHuQMhr5kCmT
+
+name: Caroline Graham
+user_id: carolineagraham01@outlook.com
+publishable_key: e5acee9a3ab74b65a0351ea603fcffe8
+secret_key: PHqE8N4aQWVquLACbBqHI3V7MKaR7a
+
+name: Test User
+user_id: test@outlook.com
+publishable_key: 0e1a46e1eb8b4177a64c06dd56b6184d
+secret_key: oWTnMo5b5wmRCZck5r3s51sTKr7fUH
