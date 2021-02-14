@@ -4,7 +4,7 @@ import re
 import openai
 
 from config import OPENAI_KEY
-from services.gpt3_examples import prompt_templates, email_examples
+from data.gpt3_examples import prompt_templates, email_examples
 
 class GPT3Service:
     temperature = 0
@@ -23,6 +23,21 @@ class GPT3Service:
         self._logger = logger
 
     def get_email_attributes(self, body):
+        """Uses OpenAI API to analyze the email body.
+        
+        Args:
+            body (str): body of the email to extract.
+
+        Returns:
+            dict: with the following properties:
+                summary (str): summary of the email.
+                category (str): category of the email.
+                action_needed (str): the action that is requested from the receiver.
+                sentiment (str): sentiment of the email.
+                deadline (str): the deadline for the action if exists.
+                mentions_covid (bool): 
+
+        """
         body = self._validate_body(body)
         prompt = self._fill_prompt(body)
 
@@ -113,20 +128,14 @@ class GPT3Service:
     def _get_category(self, category_text):
         category_text_low = category_text.lower()
 
-        categories = ["event", "job", "class", "covid"]
+        categories = [("event", "events"), ("job", "job_opportunities"), ("class", "school"), ("covid", "covid_updates")]
 
         for category in categories:
-            if category in category_text_low:
-                return category
+            category_term, category_name = category
+            if category_term in category_text_low:
+                return category_name
 
-        pieces = category_text_low.split("the category of the email is ")
-        if pieces < 2:
-            # unknown response format
-            return category_text
-        else:
-            # unknown category
-            category = pieces[-1].replace(".", "")
-            return category
+        return None
 
 class TestGPT3Service:
     def __init__(self):
