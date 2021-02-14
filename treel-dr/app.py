@@ -10,6 +10,7 @@ from config import REDIRECT_PATH, CONFIRMATION_PAGE_URL
 from schemas.user import UserSchema
 from utils import remove_none_from_dict, clean_phone_number
 from datetime import datetime, timedelta
+import pytz
 
 dependencies = load()
 app = dependencies["app"]
@@ -59,8 +60,8 @@ def authorized():
 
         res = user_service.upsertUser(user)
 
-        twilio_service.send_text(user.phone_number, f"\n🌲Welcome to TreeL;DR🌲\n\nWe will send your email digest every {user.interval} hours.\nYou are currently subscribed to emails about {(', '.join(user.subscribed))}.")
-
+        twilio_service.send_welcome(user)
+        session.clear()
         return redirect(CONFIRMATION_PAGE_URL)
     except ValueError as e:  # Usually caused by CSRF
         return jsonify({"error": {e}})
@@ -71,17 +72,28 @@ def sync():
     user_service = dependencies["user_service"]
     outlook_service = dependencies["outlook_service"]
     twilio_service = dependencies["twilio_service"]
+    gpt3_service = dependencies["gpt3_service"]
 
     users = user_service.getUsersToProcess()
 
     result = []
     for user in users:
         token = auth_service.get_access_token_from_serialized(user.token)
-        emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)), user.lastJob))
-        result.append({user.email: len(emails)})
+        emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)).replace(tzinfo=pytz.UTC), user.lastJob))
+        parsed_emails = []
+        for email in emails:
+            email["attributes"] = gpt3_service.get_email_attributes(email["text"])
+            if email["attributes"]["category"] in user.subscribed:
+                parsed_emails.append(email)
 
-        twilio_service.send_text(user.phone_number, f"\n🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")
-        
+        if len(parsed_emails) == 0:
+            twilio_service.send_no_emails_found(user)
+        else:
+            twilio_service.send_treeldr_header(user, len(parsed_emails))
+            for i, email in enumerate(parsed_emails):
+                twilio_service.send_treeldr(user, email, len(parsed_emails), i)
+            twilio_service.send_treeldr_footer(user)
+
         cache = auth_service.load_cache()
         user_update = UserSchema(**{
             "nextJob": datetime.utcnow() + timedelta(hours=user.interval),
@@ -97,20 +109,40 @@ def sync_now(email: str):
     user_service = dependencies["user_service"]
     outlook_service = dependencies["outlook_service"]
     twilio_service = dependencies["twilio_service"]
+    gpt3_service = dependencies["gpt3_service"]
 
     user = user_service.getUser(email)
-
+    print(f"Got user")
     token = auth_service.get_access_token_from_serialized(user.token)
-    emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)), user.lastJob))
-
-    twilio_service.send_text(user.phone_number, f"\n🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")
-    
+    print(f"Got token")
+    emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)).replace(tzinfo=pytz.UTC), user.lastJob))
+    print(f"Got emails")
+    parsed_emails = []
+    for email in emails:
+        email["attributes"] = gpt3_service.get_email_attributes(email["text"])
+        print(f"Parsed email {email['subject']}")
+        if email["attributes"]["category"] in user.subscribed:
+            parsed_emails.append(email)
+    print(f"Parsed all emails")
+    if len(parsed_emails) == 0:
+        twilio_service.send_no_emails_found(user)
+        print(f"Sent no email found text")
+    else:
+        print(f"Sending header")
+        twilio_service.send_treeldr_header(user, len(parsed_emails))
+        for i, email in enumerate(parsed_emails):
+            twilio_service.send_treeldr(user, email, len(parsed_emails), i)
+            print(f"Sent email text {email['subject']}")
+        twilio_service.send_treeldr_footer(user)
+    print(f"Sent all texts")
     cache = auth_service.load_cache()
+    print(f"Got cache")
     user_update = UserSchema(**{
-        "token": auth_service.dumps_cache(cache),
-        "lastJob": datetime.utcnow()
+        "lastJob": datetime.utcnow(),
+        "token": auth_service.dumps_cache(cache)
     })
     user_service.updateUser(user_update, user.email)
+    print("done!")
     return jsonify({user.email: len(emails)})
 
 if __name__ == "__main__":

@@ -3,8 +3,9 @@ import re
 
 import openai
 
-from services.gpt3_examples import prompt_templates, email_examples
+from data.gpt3_examples import prompt_templates, email_examples
 from utils import Timer
+from config import OPENAI_KEY
 
 
 class GPT3Service:
@@ -24,6 +25,7 @@ class GPT3Service:
         if not logger:
             logger = getLogger("GPT3ServiceLogger")
         self._logger = logger
+        openai.api_key = OPENAI_KEY
 
     def get_email_attributes(self, body):
         """Uses OpenAI API to analyze the email body.
@@ -142,7 +144,7 @@ class GPT3Service:
             if category_term in category_text_low:
                 return category_name
 
-        return None
+        return "other"
 
 class TestGPT3Service:
     def __init__(self):
