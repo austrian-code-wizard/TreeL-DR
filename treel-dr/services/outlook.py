@@ -22,12 +22,11 @@ class OutlookService:
         if start or end:
             url += "?$filter="
         if start:
-            url += f"ReceivedDateTime ge {start.strftime('%y-%m-%dT%H:%M:%SZ')}"
+            url += f"ReceivedDateTime ge {start.strftime('%Y-%m-%dT%H:%M:%SZ')}"
         if end:
             if start:
                 url += " and"
-            url += f" receivedDateTime lt {end.strftime('%y-%m-%dT%H:%M:%SZ')}"
-
+            url += f" receivedDateTime lt {end.strftime('%Y-%m-%dT%H:%M:%SZ')}"
         graph_data = self._graphql_request(url, token)
 
         results = []

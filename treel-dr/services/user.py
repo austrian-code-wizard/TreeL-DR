@@ -29,5 +29,5 @@ class UserService:
 
     def updateUser(self, updateData: UserSchema, email: str):
         doc_ref = self._collection.document(email)
-        doc_ref.set(remove_none_from_dict(updateData.dict()))
+        doc_ref.update(remove_none_from_dict(updateData.dict()))
         return True
