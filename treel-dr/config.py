@@ -37,3 +37,6 @@ REDIS_KEY = os.getenv("REDIS_KEY")
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = int(os.getenv("REDIS_PORT"))
 
+#### CHECKBOOK CONFIG ####
+
+CHECKBOOK_CHECK_ENPOINT = 'https://api.sandbox.checkbook.io/v3/check/digital'

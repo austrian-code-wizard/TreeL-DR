@@ -12,3 +12,5 @@ class UserSchema(pydantic.BaseModel):
     token: Optional[str]
     nextJob: Optional[datetime]
     lastJob: Optional[datetime]
+    cb_p_key: Optional[str]
+    cb_s_key: Optional[str]
