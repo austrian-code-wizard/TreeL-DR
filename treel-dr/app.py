@@ -105,6 +105,21 @@ def sync_now(email: str):
     user_service.updateUser(user_update, user.email)
     return jsonify({user.email: num_emails})
 
+@app.route("/donate", methods=["POST"])
+@handle_error
+def donate():
+    email = request.form['email']
+    nonprofit = request.form['nonprofit']
+    routing_num = request.form.get('routing_num', '')
+    account_num = request.form.get('account_num', '')
+    amount = int(request.form.get('amount', 0))
+    message = request.form.get('message', '')
+
+    checkbook_service = dependencies['checkbook_service']
+    checkbook_service.donate(email, nonprofit, routing_num, account_num, amount, message)
+
+    return redirect('/donate_success')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT)
 
