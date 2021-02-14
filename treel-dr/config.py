@@ -10,7 +10,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 AUTHORITY = "https://login.microsoftonline.com/common"
 REDIRECT_PATH = "/getAToken"
 APP_URL = "https://treel-dr.wl.r.appspot.com"
-PORT = int(os.getenv("PORT"))
+PORT = int(os.getenv("PORT")) if os.getenv("PORT") is not None else 8000
 SCOPE = ["User.ReadBasic.All", "Mail.Read"]
 
 SERVICE_ACCOUNT_PATH = os.getenv("SERVICE_ACCOUNT_PATH")

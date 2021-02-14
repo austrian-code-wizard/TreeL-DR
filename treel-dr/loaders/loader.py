@@ -8,7 +8,7 @@ from services.outlook import OutlookService
 from services.twilio import TwilioService
 from services.gpt3 import GPT3Service
 from services.jobs import JobService
-from services.checkbook import Checkbook
+from services.checkbook import CheckbookService
 
 def load():
     app = load_app()
@@ -21,7 +21,7 @@ def load():
     twilio_service = TwilioService()
     gpt3_service = GPT3Service()
     job_service = JobService(twilio_service, user_service, gpt3_service, outlook_service)
-    checkbook_service = Checkbook(user_service)
+    checkbook_service = CheckbookService(user_service)
     return {
         "app": app,
         "session": session,
