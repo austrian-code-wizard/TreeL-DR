@@ -1,4 +1,5 @@
 import requests
+from config import DONATE_CONFIRMATION_PAGE_URL
 
 class CheckbookService:
     default_nonprofit = 'nonprofit2'
@@ -6,7 +7,7 @@ class CheckbookService:
     default_donation_amount = 25
 
     CHECKBOOK_CHECK_ENPOINT = 'https://api.sandbox.checkbook.io/v3/check/digital'
-    donate_success_url = 'https://example.com'
+    donate_success_url = DONATE_CONFIRMATION_PAGE_URL
 
     def __init__(self, user_service):
         self.user_service = user_service

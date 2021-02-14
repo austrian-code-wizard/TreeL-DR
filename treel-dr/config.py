@@ -26,6 +26,7 @@ TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_NUMBER = "+14804854257"
 
 CONFIRMATION_PAGE_URL = "https://email-project-d4353e.webflow.io/confirmation"
+DONATE_CONFIRMATION_PAGE_URL = "https://email-project-d4353e.webflow.io/billing-confirmation"
 LOG_LEVEL = "DEBUG"
 
 SESSION_TYPE = "redis"

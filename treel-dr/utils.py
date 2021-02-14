@@ -3,6 +3,12 @@ from typing import Dict, List
 from functools import wraps
 from flask import jsonify
 import traceback
+from logging import getLogger
+import coloredlogs
+from config import LOG_LEVEL
+
+logger = getLogger("UtilLogger")
+coloredlogs.install(level=LOG_LEVEL, logger=logger)
 
 def remove_none_from_dict(data: Dict):
     new_data = data.copy()

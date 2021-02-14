@@ -29,6 +29,10 @@ class JobService:
         else:
             start = datetime.utcnow() - timedelta(hours=user.interval)
         emails = self._outlook_service.get_emails(token, start=start)
+
+        # TODO: Remove this. Only for demo
+        emails = emails[:5]
+
         self._logger.debug(f"Got emails")
         parsed_emails = []
         for email in emails:
