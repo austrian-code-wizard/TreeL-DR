@@ -5,7 +5,8 @@ import openai
 
 from data.gpt3_examples import prompt_templates, email_examples
 from utils import Timer
-from config import OPENAI_KEY
+from config import OPENAI_KEY, LOG_LEVEL
+import coloredlogs
 
 
 class GPT3Service:
@@ -24,6 +25,7 @@ class GPT3Service:
     def __init__(self, logger: Logger = None):
         if not logger:
             logger = getLogger("GPT3ServiceLogger")
+        coloredlogs.install(level=LOG_LEVEL, logger=logger)
         self._logger = logger
         openai.api_key = OPENAI_KEY
 

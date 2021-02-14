@@ -2,6 +2,8 @@ from logging import Logger, getLogger
 from datetime import datetime, timedelta
 from schemas.user import UserSchema
 from utils import remove_none_from_dict
+from config import LOG_LEVEL
+import coloredlogs
 
 
 class UserService:
@@ -11,6 +13,7 @@ class UserService:
         self._collection = self._db.collection(self._COLLECTION_NAME)
         if not logger:
             logger = getLogger("UserServiceLogger")
+        coloredlogs.install(level=LOG_LEVEL, logger=logger)
         self._logger = logger
 
     def upsertUser(self, userInputDTO: UserSchema):

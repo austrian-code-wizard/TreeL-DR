@@ -1,5 +1,8 @@
 import time
 from typing import Dict, List
+from functools import wraps
+from flask import jsonify
+import traceback
 
 def remove_none_from_dict(data: Dict):
     new_data = data.copy()
@@ -46,4 +49,13 @@ def format_event_name(text: str):
     text = text.split("_")
     text = [word.capitalize() for word in text]
     return " ".join(text)
+
+def handle_error(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            return jsonify({"info": f"An error occured: {traceback.format_exc()}"}), 500
+    return wrapper
 

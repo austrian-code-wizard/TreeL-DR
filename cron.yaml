@@ -1,0 +1,4 @@
+cron:
+- description: "Triggering the email sync"
+  url: /sync
+  schedule: every 5 minutes

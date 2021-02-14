@@ -2,13 +2,15 @@ from twilio.rest import Client
 from logging import Logger, getLogger
 from schemas.user import UserSchema
 from typing import Dict
-from config import TWILIO_AUTH_TOKEN, TWILIO_NUMBER, TWILIO_SID
+from config import TWILIO_AUTH_TOKEN, TWILIO_NUMBER, TWILIO_SID, LOG_LEVEL
 from utils import format_event_name
+import coloredlogs
 
 class TwilioService:
     def __init__(self, logger: Logger = None):
         if not logger:
             logger = getLogger("TwilioServiceLogger")
+        coloredlogs.install(level=LOG_LEVEL, logger=logger)
         self._logger = logger
         self._client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 
@@ -25,7 +27,7 @@ class TwilioService:
         self.send_text(user.phone_number, text)
 
     def send_treeldr_footer(self, user: UserSchema):
-        text = f"That was your TreeL;DR 😢. But don't worry! You will receive your next one in {user.interval} hours 🚀."
+        text = f"That was your TreeL;DR 🌈. But don't worry! You will receive your next one in {user.interval} hours 🚀."
         self.send_text(user.phone_number, text)
 
     def send_treeldr(self, user: UserSchema, email_info: Dict, num_emails: int, email_index: int):
@@ -37,5 +39,5 @@ class TwilioService:
         self.send_text(user.phone_number, text)
 
     def send_welcome(self, user: UserSchema):
-        text = f"\n\n🌲Welcome to TreeL;DR🌲\n\nWe will send your email digest every {user.interval} hours.\nYou are currently subscribed to emails about {(', '.join(user.subscribed))}."
+        text = f"\n\n🌲Welcome to TreeL;DR🌲\n\nWe will send your email digest every {user.interval} hours.\nYou are currently subscribed to emails about {(', '.join([format_event_name(event_type) for event_type in user.subscribed]))}."
         self.send_text(user.phone_number, text)

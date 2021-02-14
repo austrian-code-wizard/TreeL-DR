@@ -1,6 +1,7 @@
 import msal
 from logging import Logger, getLogger
-from config import CLIENT_ID, CLIENT_SECRET, AUTHORITY, REDIRECT_PATH, APP_URL, SCOPE
+from config import CLIENT_ID, CLIENT_SECRET, AUTHORITY, REDIRECT_PATH, APP_URL, SCOPE, LOG_LEVEL
+import coloredlogs
 
 class AuthService:
     def __init__(self, session, logger: Logger = None):
@@ -8,6 +9,8 @@ class AuthService:
         self._TOKEN_CACHE = "token_cache"
         if not logger:
             logger = getLogger("AuthServiceLogger")
+        coloredlogs.install(level=LOG_LEVEL, logger=logger)
+        self._logger = logger
 
     def load_cache(self):
         cache = msal.SerializableTokenCache()
