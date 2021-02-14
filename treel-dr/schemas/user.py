@@ -11,3 +11,4 @@ class UserSchema(pydantic.BaseModel):
     subscribed: Optional[List[str]]
     token: Optional[str]
     nextJob: Optional[datetime]
+    lastJob: Optional[datetime]

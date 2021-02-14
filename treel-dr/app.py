@@ -28,6 +28,7 @@ def login():
             "last": request.form["last_name"],
             "interval": int(request.form["interval"]),
             "phone_number": clean_phone_number(request.form["phone"]),
+            "lastJob": datetime.utcnow() - timedelta(years=3),
             "subscribed": [key for key in ["covid_updates", "job_opportunities", "school", "events"] if key in request.form]
         })
         session["user_info"] = remove_none_from_dict(user.dict())
@@ -88,7 +89,8 @@ def sync():
     result = []
     for user in users:
         token = auth_service.get_access_token_from_serialized(user.token)
-        emails = outlook_service.get_emails(token)
+        emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)), user.lastJob))
+        print(emails)
         result.append({user.email: len(emails)})
 
         twilio_service.send_text(user.phone_number, f"\n🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")
@@ -96,10 +98,33 @@ def sync():
         cache = auth_service.load_cache()
         user_update = UserSchema(**{
             "nextJob": datetime.utcnow() + timedelta(hours=user.interval),
+            "lastJob": datetime.utcnow(),
             "token": auth_service.dumps_cache(cache)
         })
         user_service.updateUser(user_update, user.email)
     return jsonify(result)
+
+@app.route("/syncnow/<string:email>")
+def sync_now(email: str):
+    auth_service = dependencies["auth_service"]
+    user_service = dependencies["user_service"]
+    outlook_service = dependencies["outlook_service"]
+    twilio_service = dependencies["twilio_service"]
+
+    user = user_service.getUser(email)
+
+    token = auth_service.get_access_token_from_serialized(user.token)
+    emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)), user.lastJob))
+
+    twilio_service.send_text(user.phone_number, f"\n🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")
+    
+    cache = auth_service.load_cache()
+    user_update = UserSchema(**{
+        "token": auth_service.dumps_cache(cache),
+        "lastJob": datetime.utcnow()
+    })
+    user_service.updateUser(user_update, user.email)
+    return jsonify({user.email: len(emails)})
 
 if __name__ == "__main__":
     app.run(port=8000)
