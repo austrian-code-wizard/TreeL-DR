@@ -22,7 +22,6 @@ def login():
         # Technically we could use empty list [] as scopes to do just sign in,
         # here we choose to also collect end user consent upfront
         auth_uri = auth_service.build_auth_code_flow()
-        print(request.form)
         user = UserSchema(**{
             "first": request.form["first_name"],
             "last": request.form["last_name"],
@@ -66,17 +65,6 @@ def authorized():
     except ValueError as e:  # Usually caused by CSRF
         return jsonify({"error": {e}})
 
-@app.route("/graphcall/<string:email>")
-def graphcall(email):
-    auth_service = dependencies["auth_service"]
-    user_service = dependencies["user_service"]
-    outlook_service = dependencies["outlook_service"]
-
-    user = user_service.getUser(email)
-    token = auth_service.get_access_token_from_serialized(user.token)
-    emails = outlook_service.get_emails(token)
-    return jsonify(emails)
-
 @app.route("/sync")
 def sync():
     auth_service = dependencies["auth_service"]
@@ -90,7 +78,6 @@ def sync():
     for user in users:
         token = auth_service.get_access_token_from_serialized(user.token)
         emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)), user.lastJob))
-        print(emails)
         result.append({user.email: len(emails)})
 
         twilio_service.send_text(user.phone_number, f"\n🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")

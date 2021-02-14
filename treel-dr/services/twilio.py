@@ -15,5 +15,4 @@ class TwilioService:
                         from_=TWILIO_NUMBER,
                         to=phone_number
                     )
-        print(message)
         return True
