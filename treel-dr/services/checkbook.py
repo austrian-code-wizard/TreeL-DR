@@ -2,7 +2,7 @@ import requests
 
 class CheckbookService:
     default_nonprofit = 'nonprofit2'
-    default_user_email = 'moritz.stephan2@outlook.com'
+    default_user_email = 'carolineagraham01@outlook.com'
     default_donation_amount = 25
 
     CHECKBOOK_CHECK_ENPOINT = 'https://api.sandbox.checkbook.io/v3/check/digital'
@@ -22,6 +22,8 @@ class CheckbookService:
         try:
             # user exists
             user = self.user_service.getUser(email)
+            if not user.cb_p_key or not user.cb_s_key:
+                raise Exception("User does not have checkbook keys")
         except Exception as e:
             # user doesnt exist -> use default
             user = self.user_service.getUser(self.default_user_email)
