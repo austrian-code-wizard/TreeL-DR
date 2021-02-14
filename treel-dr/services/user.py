@@ -1,6 +1,7 @@
 from logging import Logger, getLogger
 from datetime import datetime, timedelta
 from schemas.user import UserSchema
+from utils import remove_none_from_dict
 
 
 class UserService:
@@ -14,7 +15,7 @@ class UserService:
 
     def upsertUser(self, userInputDTO: UserSchema):
         doc_ref = self._collection.document(userInputDTO.email)
-        doc_ref.set(userInputDTO.dict())
+        doc_ref.set(remove_none_from_dict(userInputDTO.dict()))
         return True
 
     def getUser(self, email: str):
@@ -23,10 +24,10 @@ class UserService:
         return UserSchema(**doc.to_dict())
 
     def getUsersToProcess(self):
-        docs = self._collection.where(u'nextJob', u'<', datetime.now()).stream()
+        docs = self._collection.where(u'nextJob', u'<', datetime.utcnow()).stream()
         return [UserSchema(**doc.to_dict()) for doc in docs]
 
     def updateUser(self, updateData: UserSchema, email: str):
         doc_ref = self._collection.document(email)
-        doc_ref.set(updateData.dict())
+        doc_ref.update(remove_none_from_dict(updateData.dict()))
         return True

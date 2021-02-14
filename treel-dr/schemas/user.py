@@ -5,9 +5,10 @@ from datetime import datetime
 class UserSchema(pydantic.BaseModel):
     first: Optional[str]
     last: Optional[str]
-    phoneNumber: Optional[str]
-    email: str
-    interval: Optional[str]
+    phone_number: Optional[str]
+    email: Optional[str]
+    interval: Optional[int]
     subscribed: Optional[List[str]]
     token: Optional[str]
     nextJob: Optional[datetime]
+    lastJob: Optional[datetime]

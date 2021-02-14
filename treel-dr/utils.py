@@ -1,6 +1,7 @@
 import time
+from typing import Dict, List
 
-def remove_none_from_dict(data: dict):
+def remove_none_from_dict(data: Dict):
     new_data = data.copy()
     for key in data:
         if data[key] == None:
@@ -31,3 +32,13 @@ class Timer:
         self.interval = self.end - self.start
 
         self.logger.info(f"-> {self.concept} took {self.interval:.3f} seconds")
+
+def remove_none_from_list(data: List):
+    return [val for val in data if val is not None]
+
+def clean_phone_number(number: str):
+    cleaned_number = "".join([char for char in number if char.isnumeric()])
+    if number[0] == "+":
+        cleaned_number = "+" + cleaned_number
+    return cleaned_number
+

@@ -17,7 +17,7 @@ REDIRECT_PATH = "/getAToken"  # Used for forming an absolute URL to your redirec
                               # The absolute URL must match the redirect URI you set
                               # in the app's registration in the Azure portal.
 
-APP_URL = "http://localhost:5000"
+APP_URL = "http://localhost:8000"
 
 # You can find more Microsoft Graph API endpoints from Graph Explorer
 # https://developer.microsoft.com/en-us/graph/graph-explorer
@@ -34,3 +34,14 @@ SERVICE_ACCOUNT_PATH = '/Users/moritzstephan/Downloads/treel-dr-82e7451bd561.jso
 #### GPT3 / OPEN AI CONFIG ####
 
 OPENAI_KEY = os.environ.get("OPENAI_KEY", None)
+
+#### TWILIO CONFIG ####
+
+TWILIO_SID = "ACc13653cd13572fb1dea854e3fda15a84"
+
+TWILIO_AUTH_TOKEN = "a78820a53ba80154b97c3f8c7ed4f2aa"
+
+TWILIO_NUMBER = "+14804854257"
+
+CONFIRMATION_PAGE_URL = "https://email-project-d4353e.webflow.io/confirmation"
+
