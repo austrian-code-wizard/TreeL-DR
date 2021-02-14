@@ -22,9 +22,13 @@ class JobService:
         self._gpt3_service = gpt3_service
         self._outlook_service = outlook_service
 
-    def process_user_emails(self, user: UserSchema, token: str):
+    def process_user_emails(self, user: UserSchema, token: str, ignore_lastJob=False):
         self._logger.debug(f"Getting emails")
-        emails = self._outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)).replace(tzinfo=pytz.UTC), user.lastJob))
+        if not ignore_lastJob:
+            start = max((datetime.utcnow() - timedelta(hours=user.interval)).replace(tzinfo=pytz.UTC), user.lastJob)
+        else:
+            start = datetime.utcnow() - timedelta(hours=user.interval)
+        emails = self._outlook_service.get_emails(token, start=start)
         self._logger.debug(f"Got emails")
         parsed_emails = []
         for email in emails:

@@ -97,7 +97,7 @@ def sync_now(email: str):
 
     user = user_service.getUser(email)
     token = auth_service.get_access_token_from_serialized(user.token)
-    num_emails = job_service.process_user_emails(user, token)
+    num_emails = job_service.process_user_emails(user, token, ignore_lastJob=True)
     cache = auth_service.load_cache()
     user_update = UserSchema(**{
         "token": auth_service.dumps_cache(cache)
