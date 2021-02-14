@@ -47,7 +47,7 @@ class GPT3Service:
         """
         body = self._validate_body(body)
         prompt = self._fill_prompt(body)
-
+        self._logger.debug(f"Sending GPT-3 prompt: {prompt}")
         response = openai.Completion.create(
             engine=self.engine, prompt=prompt, max_tokens=self.max_tokens, temperature=self.temperature, frequency_penalty=self.frequency_penalty
         )
@@ -69,6 +69,7 @@ class GPT3Service:
         return result
 
     def _parse_response_text(self, response_text):
+        self._logger.debug(f"Received GPT-3 response {response_text}")
         response_text = response_text.split("#####")[0].strip()
         answers = re.split(self.answers_regex, response_text)
         (

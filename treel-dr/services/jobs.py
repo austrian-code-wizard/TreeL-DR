@@ -22,7 +22,7 @@ class JobService:
         self._gpt3_service = gpt3_service
         self._outlook_service = outlook_service
 
-    def process_user_emails(self, user: UserSchema, token: str, ignore_lastJob=False):
+    def process_user_emails(self, user: UserSchema, token: str, ignore_lastJob=False, process_descending=False):
         self._logger.debug(f"Getting emails")
         if not ignore_lastJob:
             start = max((datetime.utcnow() - timedelta(hours=user.interval)).replace(tzinfo=pytz.UTC), user.lastJob)
@@ -31,15 +31,21 @@ class JobService:
         emails = self._outlook_service.get_emails(token, start=start)
 
         # TODO: Remove this. Only for demo
-        emails = emails[:5]
+        if process_descending:
+            emails = emails[-5:]
+        else:
+            emails = emails[:5]
 
         self._logger.debug(f"Got emails")
         parsed_emails = []
         for email in emails:
-            email["attributes"] = self._gpt3_service.get_email_attributes(email["text"])
-            self._logger.debug(f"Parsed email {email['subject']}")
-            if email["attributes"]["category"] in user.subscribed:
-                parsed_emails.append(email)
+            try:
+                email["attributes"] = self._gpt3_service.get_email_attributes(email["text"])
+                self._logger.debug(f"Parsed email {email['subject']}")
+                if email["attributes"]["category"] in user.subscribed:
+                    parsed_emails.append(email)
+            except Exception as e:
+                self._logger.error(f"Error on processing email {e['subject']}: {e}")
         self._logger.debug(f"Parsed all emails")
         if len(parsed_emails) == 0:
             self._twilio_service.send_no_emails_found(user)
