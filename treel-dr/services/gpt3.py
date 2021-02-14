@@ -48,10 +48,9 @@ class GPT3Service:
         body = self._validate_body(body)
         prompt = self._fill_prompt(body)
 
-        with Timer(self._logger, "Making open ai request"):
-            response = openai.Completion.create(
-                engine=self.engine, prompt=prompt, max_tokens=self.max_tokens, temperature=self.temperature, frequency_penalty=self.frequency_penalty
-            )
+        response = openai.Completion.create(
+            engine=self.engine, prompt=prompt, max_tokens=self.max_tokens, temperature=self.temperature, frequency_penalty=self.frequency_penalty
+        )
 
         extraction = self._parse_response(response)
         
