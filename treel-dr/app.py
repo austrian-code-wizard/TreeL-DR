@@ -112,30 +112,37 @@ def sync_now(email: str):
     gpt3_service = dependencies["gpt3_service"]
 
     user = user_service.getUser(email)
-
+    print(f"Got user")
     token = auth_service.get_access_token_from_serialized(user.token)
+    print(f"Got token")
     emails = outlook_service.get_emails(token, start=max((datetime.utcnow() - timedelta(hours=user.interval)).replace(tzinfo=pytz.UTC), user.lastJob))
-
+    print(f"Got emails")
     parsed_emails = []
     for email in emails:
         email["attributes"] = gpt3_service.get_email_attributes(email["text"])
+        print(f"Parsed email {email['subject']}")
         if email["attributes"]["category"] in user.subscribed:
             parsed_emails.append(email)
-
+    print(f"Parsed all emails")
     if len(parsed_emails) == 0:
         twilio_service.send_no_emails_found(user)
+        print(f"Sent no email found text")
     else:
+        print(f"Sending header")
         twilio_service.send_treeldr_header(user, len(parsed_emails))
         for i, email in enumerate(parsed_emails):
             twilio_service.send_treeldr(user, email, len(parsed_emails), i)
+            print(f"Sent email text {email['subject']}")
         twilio_service.send_treeldr_footer(user)
-        
+    print(f"Sent all texts")
     cache = auth_service.load_cache()
+    print(f"Got cache")
     user_update = UserSchema(**{
         "lastJob": datetime.utcnow(),
         "token": auth_service.dumps_cache(cache)
     })
     user_service.updateUser(user_update, user.email)
+    print("done!")
     return jsonify({user.email: len(emails)})
 
 if __name__ == "__main__":
