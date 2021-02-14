@@ -45,3 +45,6 @@ TWILIO_NUMBER = "+14804854257"
 
 CONFIRMATION_PAGE_URL = "https://email-project-d4353e.webflow.io/confirmation"
 
+#### CHECKBOOK CONFIG ####
+
+CHECKBOOK_CHECK_ENPOINT = 'https://api.sandbox.checkbook.io/v3/check/digital'
