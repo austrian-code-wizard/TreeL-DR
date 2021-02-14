@@ -30,3 +30,7 @@ SCOPE = ["User.ReadBasic.All", "Mail.Read"]
 SESSION_TYPE = "filesystem"  # Specifies the token cache should be stored in server-side session
 
 SERVICE_ACCOUNT_PATH = '/Users/moritzstephan/Downloads/treel-dr-82e7451bd561.json'
+
+#### GPT3 / OPEN AI CONFIG ####
+
+OPENAI_KEY = os.environ.get("OPENAI_KEY", None)
