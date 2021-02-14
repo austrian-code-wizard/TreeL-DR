@@ -6,7 +6,7 @@ from services.user import UserService
 from services.outlook import OutlookService
 from services.auth import AuthService
 from loaders.loader import load
-from config import REDIRECT_PATH
+from config import REDIRECT_PATH, CONFIRMATION_PAGE_URL
 from schemas.user import UserSchema
 from utils import remove_none_from_dict, clean_phone_number
 from datetime import datetime, timedelta
@@ -59,9 +59,9 @@ def authorized():
 
         res = user_service.upsertUser(user)
 
-        twilio_service.send_text(user.phone_number, f"🌲Welcome to TreeL;DR🌲\n\nWe will send your email digest every {user.interval} hours.\nYou are currently subscribed to emails about {(', '.join(user.subscribed))[2:]}.")
+        twilio_service.send_text(user.phone_number, f"\n🌲Welcome to TreeL;DR🌲\n\nWe will send your email digest every {user.interval} hours.\nYou are currently subscribed to emails about {(', '.join(user.subscribed))}.")
 
-        return jsonify({"info": "Success!"})
+        return redirect(CONFIRMATION_PAGE_URL)
     except ValueError as e:  # Usually caused by CSRF
         return jsonify({"error": {e}})
 
@@ -90,8 +90,15 @@ def sync():
         token = auth_service.get_access_token_from_serialized(user.token)
         emails = outlook_service.get_emails(token)
         result.append({user.email: len(emails)})
-        twilio_service.send_text(user.phone_number, f"🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")
-        user_service.updateUser(UserSchema(nextJob=(datetime.utcnow() + timedelta(hours=user.interval))), user.email)
+
+        twilio_service.send_text(user.phone_number, f"\n🌲Your TreeL;DR🌲\n\nHi {user.first}!\nWe found {len(emails)} emails for you.\n\nHave a great day!\n<3 TreeL;DR")
+        
+        cache = auth_service.load_cache()
+        user_update = UserSchema(**{
+            "nextJob": datetime.utcnow() + timedelta(hours=user.interval),
+            "token": auth_service.dumps_cache(cache)
+        })
+        user_service.updateUser(user_update, user.email)
     return jsonify(result)
 
 if __name__ == "__main__":

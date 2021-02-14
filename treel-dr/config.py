@@ -36,3 +36,5 @@ TWILIO_SID = "ACc13653cd13572fb1dea854e3fda15a84"
 TWILIO_AUTH_TOKEN = "a78820a53ba80154b97c3f8c7ed4f2aa"
 
 TWILIO_NUMBER = "+14804854257"
+
+CONFIRMATION_PAGE_URL = "https://email-project-d4353e.webflow.io/confirmation"
