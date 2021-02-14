@@ -3,6 +3,8 @@ from schemas.user import UserSchema
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
+import coloredlogs
+from config import LOG_LEVEL
 
 class OutlookService:
     def __init__(self, logger: Logger = None):
@@ -12,6 +14,7 @@ class OutlookService:
         }
         if not logger:
             logger = getLogger("OutlookServiceLogger")
+        coloredlogs.install(level=LOG_LEVEL, logger=logger)
         self._logger = logger
 
     def _graphql_request(self, endpoint: str, token: str):
