@@ -12,7 +12,7 @@ import coloredlogs
 class GPT3Service:
     temperature = 0
     engine = "davinci"
-    max_tokens = 300
+    max_tokens = 200
     frequency_penalty = 0.3
 
     # answers_regex = r"((^|(\d\. )).+?(?=(\n\d\. )|$))"
