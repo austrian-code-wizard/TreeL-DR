@@ -15,7 +15,7 @@ https://www.twilio.com/reset-verification
 
 Questions:
 1. What is the tl;dr of the email?
-2. What is the category of the email (event, school announcement, job posting, covid-19 update, or other)?
+2. What is the category of the email (event, class announcement, school announcement, job posting, covid-19 update, or other)?
 3. Does the email ask you to do anything?
 4. When is the deadline?
 5. Does the email mention covid-19?
@@ -39,7 +39,7 @@ Answers:
 
 Questions:
 1. What is the tl;dr of the email?
-2. What is the category of the email (event, school announcement, job posting, covid-19 update, or other)?
+2. What is the category of the email (event, class announcement, school announcement, job posting, covid-19 update, or other)?
 3. Does the email ask you to do anything?
 4. When is the deadline?
 5. Does the email mention covid-19?

@@ -12,7 +12,7 @@ import coloredlogs
 class GPT3Service:
     temperature = 0
     engine = "davinci"
-    max_tokens = 300
+    max_tokens = 200
     frequency_penalty = 0.3
 
     # answers_regex = r"((^|(\d\. )).+?(?=(\n\d\. )|$))"
@@ -138,12 +138,13 @@ class GPT3Service:
     def _get_category(self, category_text):
         category_text_low = category_text.lower()
 
-        categories = [("event", "events"), ("job", "job_opportunities"), ("school", "school"), ("covid", "covid_updates")]
+        categories = [(["event"], "events"), (["job"], "job_opportunities"), (["school", "class"], "school"), (["covid"], "covid_updates")]
 
         for category in categories:
-            category_term, category_name = category
-            if category_term in category_text_low:
-                return category_name
+            category_terms, category_name = category
+            for category_term in category_terms:
+                if category_term in category_text_low:
+                    return category_name
 
         return "other"
 
