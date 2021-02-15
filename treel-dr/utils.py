@@ -62,6 +62,7 @@ def handle_error(f):
         try:
             return f(*args, **kwargs)
         except Exception as e:
+            logger.error(f"Error: {traceback.format_exc()}")
             return jsonify({"info": f"An error occured: {traceback.format_exc()}"}), 500
     return wrapper
 

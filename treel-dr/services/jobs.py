@@ -45,7 +45,7 @@ class JobService:
                 if email["attributes"]["category"] in user.subscribed:
                     parsed_emails.append(email)
             except Exception as e:
-                self._logger.error(f"Error on processing email {e['subject']}: {e}")
+                self._logger.error(f"Error on processing email {email['subject']}: {e}")
         self._logger.debug(f"Parsed all emails")
         if len(parsed_emails) == 0:
             self._twilio_service.send_no_emails_found(user)
