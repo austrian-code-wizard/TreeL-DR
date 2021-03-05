@@ -70,16 +70,6 @@ Answers:
 ]
 
 email_examples = {
-    # {
-    #     "type": "",
-    #     "subject": "",
-    #     "body": """""",
-    # },
-    # {
-    #     "type": "",
-    #     "subject": "",
-    #     "body": """""",
-    # },
     "twilio": {
         "type": "other",
         "subject": "Twilio password reset",
